@@ -150,7 +150,7 @@ int main() {
     CircularLinkedList<MonopolyBoard> list;
 
     // Insert elements at the end
-    //list.insertAtHead(); ToDo make all these functions work
+    //list.insertAtHead(); ToDo make all these functions work, vcs file missing
 
     list.insertAtTail();
 
