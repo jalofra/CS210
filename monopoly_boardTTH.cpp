@@ -23,7 +23,7 @@ public:
         this->propertyName=propertyName;
         this->propertyColor=propertyColor;
         this->value=value;
-        this->rent=rent;
+        this->rent=rent; //todo someying
     }
 
 
