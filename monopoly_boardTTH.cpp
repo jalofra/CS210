@@ -23,7 +23,7 @@ public:
         this->propertyName=propertyName;
         this->propertyColor=propertyColor;
         this->value=value;
-        this->rent=rent; //todo someying
+        this->rent=rent;
     }
 
 
@@ -65,12 +65,13 @@ public:
         cout<<"Insert at head unwritten"<<endl;
     }*/
     void insertAtHead(T value) {
-        Node<T> *newNode = new Node<T>(value);
+        Node<T> *newNode = new Node<T>(value);//ToDo update the tailNode pointer
         if (headNode == nullptr) {
             headNode = newNode;
         } else {
             newNode->nextNode = headNode;
             headNode = newNode;
+            tailNode->nextNode = newNode;
         }
     }
 
@@ -88,8 +89,28 @@ public:
         }
     }
 
-    void insertAtPosition() {
-        cout<<"Insert at Position unwritten"<<endl;
+    void insertAtPosition(T value, int position) {
+        Node<T> *newNode = new Node<T>(value);
+        Node<T> *currentNode = headNode;
+        int positionIndex = 0;
+
+        if (position == 0) {//ToDo update tail node if position is 0
+            newNode->nextNode = currentNode;
+            headNode = newNode;
+            return;
+        }
+
+        for (int i =0; i < position - 1 && currentNode != nullptr; i++) {
+        currentNode = currentNode->nextNode;
+        }
+
+        if (currentNode == nullptr) {
+            cout << "Position out of bounds" << endl;
+            return;
+        }
+
+        newNode->nextNode = currentNode->nextNode;
+        currentNode->nextNode = newNode;
     }
     void deleteAtHead() {
         cout<<"Delete at head unwritten"<<endl;
@@ -154,7 +175,7 @@ int main() {
 
     list.insertAtTail();
 
-    list.insertAtPosition();
+    list.insertAtPosition(5);
 
     list.deleteAtHead();
 
