@@ -19,30 +19,32 @@ public:
     }
 
 
-    MonopolyBoard(string propertyName,string propertyColor,int value, int rent){
-        this->propertyName=propertyName;
-        this->propertyColor=propertyColor;
-        this->value=value;
-        this->rent=rent;
+    MonopolyBoard(string propertyName, string propertyColor, int value, int rent) {
+        this->propertyName = propertyName;
+        this->propertyColor = propertyColor;
+        this->value = value;
+        this->rent = rent;
     }
 
 
     bool isEqual(MonopolyBoard other) {
         return value == other.value && rent == other.rent &&
-        propertyName == other.propertyName && propertyColor == other.propertyColor;
+               propertyName == other.propertyName && propertyColor == other.propertyColor;
     }
 
 
     void print() {
-        cout << "Property: " << propertyName << ", color: " << propertyColor << ", value: " << value << ", rent: " << rent << endl;
+        cout << "Property: " << propertyName << ", color: " << propertyColor << ", value: " << value << ", rent: "
+             << rent << endl;
     }
 };
 
 // Template Node class
-template <typename T> class Node {
+template<typename T>
+class Node {
 public:
     T data;
-    Node* nextNode;
+    Node *nextNode;
 
     Node(T value) {
         data = value;
@@ -50,10 +52,11 @@ public:
     }
 };
 
-template <typename T> class CircularLinkedList {
+template<typename T>
+class CircularLinkedList {
 private:
-    Node<T>* headNode;
-    Node<T>* tailNode;
+    Node<T> *headNode;
+    Node<T> *tailNode;
 
 public:
     CircularLinkedList() {
@@ -84,33 +87,25 @@ public:
             tailNode->nextNode = headNode;
         } else {
             tailNode->nextNode = newNode;
+            tailNode = newNode;
             tailNode->nextNode = headNode;
         }
     }
 
-    void insertAtPosition(T value, int position) {
-        Node<T>* newNode = new Node<T>(value);
+    void insertAtPosition(T value, int pos) {
+        Node<T> *newNode = new Node<T>(value);
 
-        if (position == 0) {
-            if (headNode == nullptr) {
-                headNode = newNode;
-                tailNode = newNode;
-                tailNode->nextNode = headNode;
-            } else {
-                newNode->nextNode = headNode;
-                headNode = newNode;
-                tailNode->nextNode = headNode;
-            }
+        if (pos == 0) {
+            insertAtHead(value);
             return;
         }
 
-        Node<T>* currentNode = headNode;
-        for (int i = 0; i < position - 1; i++) {
+        Node<T> *currentNode = headNode;
+        for (int i = 0; i < pos - 1; i++) {
             currentNode = currentNode->nextNode;
 
             if (currentNode == headNode) {
-                cout << "Position out of bounds when trying to insert: ";
-                newNode->data.print();
+                cout << "Position out of bounds when trying to insert: " << endl;
                 return;
             }
         }
@@ -125,6 +120,7 @@ public:
     }
 
     void deleteAtHead() {
+        Node<T> *currentNode = headNode;
         if (headNode == nullptr) {
             return;
         }
@@ -133,13 +129,12 @@ public:
             headNode = nullptr;
             tailNode = nullptr;
         } else {
-            Node<T>* currentNode = headNode;
+
             headNode = headNode->nextNode;
             tailNode->nextNode = headNode;
             delete currentNode;
         }
     }
-
 
 
     void deleteAtTail() {
@@ -151,6 +146,7 @@ public:
             delete headNode;
             tailNode = nullptr;
             headNode = nullptr;
+            return;
         } else {
             while (currentNode->nextNode != tailNode) {
                 currentNode = currentNode->nextNode;
@@ -163,40 +159,66 @@ public:
 
     }
 
-    void deleteAtPosition(int position) {//ToDo finish
+    void deleteAtPosition(int pos) {
         Node<T> *currentNode = headNode;
+        Node<T> *prevNode = nullptr;
+
         if (headNode == nullptr) {
             return;
         }
-        if (position == 0){
-            if (headNode == tailNode) {
-                delete headNode;
-                headNode = nullptr;
-                tailNode = nullptr;
-            } else {
-                headNode = headNode->nextNode;
-                tailNode->nextNode = headNode;
-                delete currentNode;
-            }
-
-
+        if (pos == 0) {
+            deleteAtHead();
+            return;
         }
+
+        for (int i = 0; i < pos - 1; i++) {
+            prevNode = currentNode;
+            currentNode = currentNode->nextNode;
+            if (currentNode == headNode) {
+                cout << "Error: out of bounds" << endl;
+                return;
+            }
+        }
+
+        Node<T> *targetNode = currentNode->nextNode;
+        currentNode->nextNode = targetNode->nextNode;
+
+        if (targetNode == tailNode) {
+            tailNode = currentNode;
+        }
+
+        delete targetNode;
+
     }
 
 
-    void search(T value) {//ToDo finish
+    void search(T value) {
+        Node<T> *currentNode = headNode;
 
-        cout<<"Search unwritten"<<endl;
+        cout << "Searching..." << endl;
+        if (headNode == nullptr) {
+            cout << "Can't search an empty list" << endl;
+            return;
+        }
+
+        do {
+            if (currentNode->data.isEqual(value)) {
+                cout << "Found this: ";
+                currentNode->data.print();
+                return;
+            }
+            currentNode = currentNode->nextNode;
+        } while (currentNode != headNode);
+        cout << "Couldn't find property on list" << endl;
     }
+
     void printList() {
         if (headNode == nullptr) {
             cout << "List is empty" << endl;
             return;
         }
-
-        Node<T>* currentNode = headNode;
-
-
+        Node<T> *currentNode = headNode;
+        cout << "---This is the current List---" << endl;
         do {
             currentNode->data.print();
             currentNode = currentNode->nextNode;
@@ -215,28 +237,60 @@ public:
     //Basic Funtions
     void reverseCLList() {
         cout << "Reverse List unwritten" << endl;
-    } void sortCLList() {
-        cout << "Sort List unwritten" << endl;
-    } void printHeadNode() {
-        cout << "Print Head Node unwritten" << endl;
-    } void printLastNode() {
-        cout << "Print Last Node unwritten" << endl;
-    } void isListEmpty() {
-        cout << "Is List Empty unwritten" << endl;
     }
+
+    void sortCLList() {
+        cout << "Sort List unwritten" << endl;
+    }
+
+    void printHeadNode() {
+        if (headNode == nullptr) {
+            cout << "List is empty" << endl;
+            return;
+        } else {
+            headNode->data.print();
+        }
+
+    }
+
+    void printLastNode() {
+        if (tailNode == nullptr) {
+            cout << "List is empty" << endl;
+            return;
+        } else {
+            tailNode->data.print();
+        }
+    }
+
+    bool isListEmpty() {
+        return headNode == nullptr;
+    }
+
     void countNodes() {
-        cout << "Count Nodes unwritten" << endl;
+        Node<T> *currNode = headNode;
+        int count = 0;
+        do {
+            count++;
+            currNode = currNode->nextNode;
+        } while (currNode != headNode);
+        cout << "We have " << count << " nodes in our list." << endl;
     }
 
     //Optional Tasks
     // Advanced Functions
     void convertCLList() {
         cout << "Convert Circular List Unwritten." << endl;
-    } void updateNodeValue() {
+    }
+
+    void updateNodeValue() {
         cout << "update Node value unwritten" << endl;
-    } void displaySpecificColorNode() {
+    }
+
+    void displaySpecificColorNode() {
         cout << "Display Specific color Node" << endl;
-    } void mergeCLList() {
+    }
+
+    void mergeCLList() {
         cout << "Merge Circular Linked List Unwritten" << endl;
     }
 
@@ -246,11 +300,11 @@ public:
 int main() {
 
     CircularLinkedList<MonopolyBoard> list;
-    MonopolyBoard myHouse = *new MonopolyBoard("MyHouse","red",1000, 500);
-    MonopolyBoard yourHouse = *new MonopolyBoard("YourHouse","orange",900, 400);
-    MonopolyBoard theirHouse = *new MonopolyBoard("TheirHouse","yellow",800, 400);
-    MonopolyBoard herHouse = *new MonopolyBoard("HerHouse","green",600, 300);
-    MonopolyBoard hisHouse = *new MonopolyBoard("HisHouse","blue",600, 300);
+    MonopolyBoard myHouse = *new MonopolyBoard("MyHouse", "red", 1000, 500);
+    MonopolyBoard yourHouse = *new MonopolyBoard("YourHouse", "orange", 900, 400);
+    MonopolyBoard theirHouse = *new MonopolyBoard("TheirHouse", "yellow", 800, 400);
+    MonopolyBoard herHouse = *new MonopolyBoard("HerHouse", "green", 600, 300);
+    MonopolyBoard hisHouse = *new MonopolyBoard("HisHouse", "blue", 600, 300);
 
     list.insertAtHead(myHouse);
     list.insertAtTail(yourHouse);
@@ -258,31 +312,39 @@ int main() {
     list.insertAtPosition(herHouse, 3);
     list.insertAtHead(hisHouse);
 
-    cout << "List before deletion" << endl;
 
     list.printList();
+    cout << "^ List before deletion" << endl;
 
-   list.deleteAtHead();
-    //list.deleteAtTail();
-    //list.deleteAtPosition(2);
+    //list.deleteAtHead();
+    //list.deleteAtHead();
+    list.search(myHouse);
+    list.deleteAtTail();
+    list.deleteAtPosition(2);
+
 
     //Optional Basic Tasks
 
-   /* list.reverseCLList();
-    list.sortCLList();
+    /* list.reverseCLList();
+     list.sortCLList();
+     list.isListEmpty();
+     list.countNodes();
+
+     //Optional Advanced Tasks
+     list.convertCLList();
+     list.updateNodeValue();
+     list.displaySpecificColorNode();
+     list.mergeCLList();*/
+
+    list.printList();
+    cout << "^ List after deletion " << endl;
+    cout << "Printing head Node: ";
     list.printHeadNode();
+    cout << "Printing tail Node: ";
     list.printLastNode();
-    list.isListEmpty();
+    cout << "isListEmpty() [0 = false; 1 = true]: " << list.isListEmpty() << endl;
+    list.printList();
     list.countNodes();
-
-    //Optional Advanced Tasks
-    list.convertCLList();
-    list.updateNodeValue();
-    list.displaySpecificColorNode();
-    list.mergeCLList();*/
-
-   list.printList();
-   cout << "List after deletion " << endl;
 
     return 0;
 }
