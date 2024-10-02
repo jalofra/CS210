@@ -346,5 +346,7 @@ int main() {
     list.printList();
     list.countNodes();
 
+    cout << "End Program";
+
     return 0;
 }
