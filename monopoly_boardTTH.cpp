@@ -28,12 +28,13 @@ public:
 
 
     bool isEqual(MonopolyBoard other) {
-        return value == other.value && rent == other.rent && propertyName == other.propertyName && propertyColor == other.propertyColor;
+        return value == other.value && rent == other.rent &&
+        propertyName == other.propertyName && propertyColor == other.propertyColor;
     }
 
 
     void print() {
-        cout << propertyName << " " << propertyColor << " " << value << " " << rent << endl;
+        cout << "Property: " << propertyName << ", color: " << propertyColor << ", value: " << value << ", rent: " << rent << endl;
     }
 };
 
@@ -62,17 +63,16 @@ public:
     }
 
 // Mandatory Tasks
-    /*void insertAtHead() {
-        cout<<"Insert at head unwritten"<<endl;
-    }*/
     void insertAtHead(T value) {
-        Node<T> *newNode = new Node<T>(value);//ToDo update the tailNode pointer
+        Node<T> *newNode = new Node<T>(value);
         if (headNode == nullptr) {
             headNode = newNode;
+            tailNode = newNode;
+            tailNode->nextNode = headNode;
         } else {
             newNode->nextNode = headNode;
             headNode = newNode;
-            tailNode->nextNode = newNode;
+            tailNode->nextNode = headNode;
         }
     }
 
@@ -80,58 +80,72 @@ public:
     void insertAtTail(T value) {
         Node<T> *newNode = new Node<T>(value);
         if (tailNode == nullptr) {
-            tailNode  = newNode;
-        } else {
-            while (tailNode->next != nullptr) {
-                tailNode = tailNode->next;
-            }
-            tailNode->next = newNode;
+            headNode = newNode;
             tailNode = newNode;
+            tailNode->nextNode = headNode;
+        } else {
+            tailNode->nextNode = newNode;  // Link the current tail to the new node
+            tailNode = newNode;            // Update tailNode
+            tailNode->nextNode = headNode;
         }
     }
 
     void insertAtPosition(T value, int position) {
-        Node<T> *newNode = new Node<T>(value);
-        Node<T> *currentNode = headNode;
-        int positionIndex = 0;
+        Node<T>* newNode = new Node<T>(value);
 
-        if (position == 0) {//ToDo update tail node if position is 0
-            newNode->nextNode = currentNode;
-            headNode = newNode;
-            if (tailNode == nullptr) {
+        if (position == 0) {
+            if (headNode == nullptr) {
+                headNode = newNode;
                 tailNode = newNode;
+                tailNode->nextNode = headNode;
+            } else {
+                newNode->nextNode = headNode;
+                headNode = newNode;
+                tailNode->nextNode = headNode;
             }
             return;
         }
 
-        for (int i =0; i < position - 1 && currentNode != nullptr; i++) {
-        currentNode = currentNode->nextNode;
-        }
+        Node<T>* currentNode = headNode;
+        for (int i = 0; i < position - 1; i++) {
+            currentNode = currentNode->nextNode;
 
-        if (currentNode == nullptr) {
-            cout << "Position out of bounds" << endl;
-            return;
+            if (currentNode == headNode) {
+                cout << "Position out of bounds when trying to insert: ";
+                newNode->data.print();
+                return;
+            }
         }
 
         newNode->nextNode = currentNode->nextNode;
         currentNode->nextNode = newNode;
+
+        // Case 3: If inserting at the tail, update the tail pointer
+        if (currentNode == tailNode) {
+            tailNode = newNode;
+            tailNode->nextNode = headNode;  // Maintain circular link
+        }
     }
+
     void deleteAtHead() {
-        Node<T> *currentNode = headNode;
         if (headNode == nullptr) {
             return;
         }
         if (headNode == tailNode) {
+            delete headNode;
             headNode = nullptr;
             tailNode = nullptr;
         } else {
+            Node<T>* currentNode = headNode;
             headNode = headNode->nextNode;
+            tailNode->nextNode = headNode;
+            delete currentNode;
         }
-        delete currentNode;
     }
 
 
-    void deleteAtTail() {
+
+    void deleteAtTail() {//ToDo
         Node<T> *currentNode = tailNode;
 
 
@@ -139,7 +153,7 @@ public:
 
     }
 
-    void deleteAtPosition() {
+    void deleteAtPosition(int position) {
         cout<<"Delete at Position unwritten"<<endl;
     }
 
@@ -149,8 +163,22 @@ public:
         cout<<"Search unwritten"<<endl;
     }
     void printList() {
-        cout << "Print List unwritten" << endl;
+        if (headNode == nullptr) {
+            cout << "List is empty" << endl;
+            return;
+        }
+
+        Node<T>* currentNode = headNode;
+
+
+        do {
+            currentNode->data.print();
+            currentNode = currentNode->nextNode;
+        } while (currentNode != headNode);
+
+        cout << endl;
     }
+
 
     //Optional Tasks
     //Basic Funtions
@@ -187,23 +215,30 @@ public:
 int main() {
     // Create a LinkedList of Data objects
     CircularLinkedList<MonopolyBoard> list;
+    MonopolyBoard myHouse = *new MonopolyBoard("MyHouse","red",1000, 500);
+    MonopolyBoard yourHouse = *new MonopolyBoard("YourHouse","orange",900, 400);
+    MonopolyBoard theirHouse = *new MonopolyBoard("TheirHouse","yellow",800, 400);
+    MonopolyBoard herHouse = *new MonopolyBoard("HerHouse","green",600, 300);
+    MonopolyBoard hisHouse = *new MonopolyBoard("HisHouse","blue",600, 300);
 
-    // Insert elements at the end
-    //list.insertAtHead(); ToDo make all these functions work
+    list.insertAtHead(myHouse);
+    list.insertAtTail(yourHouse);
+    list.insertAtHead(theirHouse);
+    list.insertAtPosition(herHouse, 3);
+    list.insertAtHead(hisHouse);
+    cout << myHouse.propertyColor << endl;
 
-    list.insertAtTail();
+    cout << "List before deletion" << endl;
 
-    list.insertAtPosition(5);
+    list.printList();
 
-    list.deleteAtHead();
-
-    list.deleteAtTail();
-
-    list.deleteAtPosition();
+   list.deleteAtHead();
+    //list.deleteAtTail();
+    //list.deleteAtPosition(2);
 
     //Optional Basic Tasks
 
-    list.reverseCLList();
+   /* list.reverseCLList();
     list.sortCLList();
     list.printHeadNode();
     list.printLastNode();
@@ -214,7 +249,10 @@ int main() {
     list.convertCLList();
     list.updateNodeValue();
     list.displaySpecificColorNode();
-    list.mergeCLList();
+    list.mergeCLList();*/
+
+   list.printList();
+   cout << "List after deletion " << endl;
 
     return 0;
 }
