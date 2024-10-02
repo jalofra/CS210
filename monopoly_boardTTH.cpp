@@ -50,7 +50,6 @@ public:
     }
 };
 
-// Template LinkedList class
 template <typename T> class CircularLinkedList {
 private:
     Node<T>* headNode;
@@ -84,8 +83,7 @@ public:
             tailNode = newNode;
             tailNode->nextNode = headNode;
         } else {
-            tailNode->nextNode = newNode;  // Link the current tail to the new node
-            tailNode = newNode;            // Update tailNode
+            tailNode->nextNode = newNode;
             tailNode->nextNode = headNode;
         }
     }
@@ -120,10 +118,9 @@ public:
         newNode->nextNode = currentNode->nextNode;
         currentNode->nextNode = newNode;
 
-        // Case 3: If inserting at the tail, update the tail pointer
         if (currentNode == tailNode) {
             tailNode = newNode;
-            tailNode->nextNode = headNode;  // Maintain circular link
+            tailNode->nextNode = headNode;
         }
     }
 
@@ -145,20 +142,49 @@ public:
 
 
 
-    void deleteAtTail() {//ToDo
-        Node<T> *currentNode = tailNode;
+    void deleteAtTail() {
+        Node<T> *currentNode = headNode;
+        if (headNode == nullptr) {
+            return;
+        }
+        if (headNode == tailNode) {
+            delete headNode;
+            tailNode = nullptr;
+            headNode = nullptr;
+        } else {
+            while (currentNode->nextNode != tailNode) {
+                currentNode = currentNode->nextNode;
+            }
+            delete tailNode;
+            tailNode = currentNode;
+            tailNode->nextNode = headNode;
 
-
-        delete currentNode;
+        }
 
     }
 
-    void deleteAtPosition(int position) {
-        cout<<"Delete at Position unwritten"<<endl;
+    void deleteAtPosition(int position) {//ToDo finish
+        Node<T> *currentNode = headNode;
+        if (headNode == nullptr) {
+            return;
+        }
+        if (position == 0){
+            if (headNode == tailNode) {
+                delete headNode;
+                headNode = nullptr;
+                tailNode = nullptr;
+            } else {
+                headNode = headNode->nextNode;
+                tailNode->nextNode = headNode;
+                delete currentNode;
+            }
+
+
+        }
     }
 
 
-    void search(T value) {
+    void search(T value) {//ToDo finish
 
         cout<<"Search unwritten"<<endl;
     }
@@ -179,6 +205,11 @@ public:
         cout << endl;
     }
 
+    /*ToDo 40 pts. 4 Basic or 2 Advanced.
+     * All lvl 1 or 2 = 10 EC
+     * ALL lvl 1 + 2 = 15 EC
+     * Past 80 pts = 2pts per func
+     * */
 
     //Optional Tasks
     //Basic Funtions
@@ -211,9 +242,9 @@ public:
 
 };
 
-// Main function to demonstrate the LinkedList class
+
 int main() {
-    // Create a LinkedList of Data objects
+
     CircularLinkedList<MonopolyBoard> list;
     MonopolyBoard myHouse = *new MonopolyBoard("MyHouse","red",1000, 500);
     MonopolyBoard yourHouse = *new MonopolyBoard("YourHouse","orange",900, 400);
@@ -226,7 +257,6 @@ int main() {
     list.insertAtHead(theirHouse);
     list.insertAtPosition(herHouse, 3);
     list.insertAtHead(hisHouse);
-    cout << myHouse.propertyColor << endl;
 
     cout << "List before deletion" << endl;
 
