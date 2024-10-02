@@ -58,6 +58,7 @@ private:
 public:
     CircularLinkedList() {
         headNode = nullptr;
+        tailNode = nullptr;
     }
 
 // Mandatory Tasks
@@ -97,6 +98,9 @@ public:
         if (position == 0) {//ToDo update tail node if position is 0
             newNode->nextNode = currentNode;
             headNode = newNode;
+            if (tailNode == nullptr) {
+                tailNode = newNode;
+            }
             return;
         }
 
@@ -113,12 +117,26 @@ public:
         currentNode->nextNode = newNode;
     }
     void deleteAtHead() {
-        cout<<"Delete at head unwritten"<<endl;
+        Node<T> *currentNode = headNode;
+        if (headNode == nullptr) {
+            return;
+        }
+        if (headNode == tailNode) {
+            headNode = nullptr;
+            tailNode = nullptr;
+        } else {
+            headNode = headNode->nextNode;
+        }
+        delete currentNode;
     }
 
 
     void deleteAtTail() {
-        cout<<"Delete at Tail unwritten"<<endl;
+        Node<T> *currentNode = tailNode;
+
+
+        delete currentNode;
+
     }
 
     void deleteAtPosition() {
